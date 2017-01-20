@@ -21,7 +21,7 @@
 /**
  * App ID for the skill
  */
-var APP_ID = "amzn1.ask.skill.b64c7560-0f1d-4e7f-8087-1fdba44d7535"; //replace with "amzn1.echo-sdk-ams.app.[your-unique-value-here]";
+var APP_ID = undefined; //"amzn1.ask.skill.b64c7560-0f1d-4e7f-8087-1fdba44d7535"; //replace with "amzn1.echo-sdk-ams.app.[your-unique-value-here]";
 
 /**
  * The AlexaSkill prototype and helper functions
@@ -78,8 +78,16 @@ BESS.prototype.intentHandlers = {
             response.ask("Out of 3427 blocked email, 93% are Spam and 7% are Viruses. Would you like to hear the trends?");
         }
         if (session.attributes.next === "trends") {
-            response.tell("Viruses increased 4% versus previous 24 hours period.");
+            response.tell("Viruses increased 4% versus previous 24 hours period. That's it for now.");
         }
+//        if (session.attributes.next === "trends") {
+//            session.attributes.next = "upsell";
+//            response.ask("Viruses increased 4% versus previous 24 hours period. Barracuda Advanced threats detection will help you keep your organization secure. Would you like to talk to a sales representative now?");
+//        }
+//        if (session.attributes.next === "upsell") {
+//            response.tell("I'm sorry, the sales department is closed right now, but Fleming says Hi.");
+//          }
+
     },
     "AMAZON.HelpIntent": function (intent, session, response) {
         response.ask("You can say summary to me!", "You can say summary to me!");
@@ -92,12 +100,3 @@ exports.handler = function (event, context) {
     var bess = new BESS();
     bess.execute(event, context);
 };
-
-//if (session.attributes.next === "trends") {
-//	session.attributes.next = "upsell";
-//    response.ask("Viruses increased 4% versus previous 24 hours period. Barracuda Advanced threats detection will help you keep your organization secure. Would you like to talk to a sales representative now?");
-//}
-//if (session.attributes.next === "upsell") {
-//    response.tell("I'm sorry, the sales department is closed right now, but Fleming says Hi.");
-//}
-
