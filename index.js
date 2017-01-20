@@ -21,7 +21,7 @@
 /**
  * App ID for the skill
  */
-var APP_ID = undefined; //replace with "amzn1.echo-sdk-ams.app.[your-unique-value-here]";
+var APP_ID = "amzn1.ask.skill.b64c7560-0f1d-4e7f-8087-1fdba44d7535"; //replace with "amzn1.echo-sdk-ams.app.[your-unique-value-here]";
 
 /**
  * The AlexaSkill prototype and helper functions
@@ -64,7 +64,22 @@ BESS.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, ses
 BESS.prototype.intentHandlers = {
     // register custom intent handlers
     "SummaryIntent": function (intent, session, response) {
-        response.tell("In the past 24 hours, ESS has processed 37896 messages");
+        session.attributes.next = "breakdown";
+        response.ask("In the past 24 hours, ESS has processed 37896 messages, 3427 has been blocked. Would you like to hear a breakdown?",
+        "Would you like to hear a breakdown?");
+    },
+    "AnswerOnlyIntent": function (intent, session, response) {
+        console.log("AnswerOnlyIntent session attributes: " + session.attributes);
+        if (intent.slots.Answer.value === "no") {
+            response.tell("Fair enough. Stay safe out there.");
+        }
+        if (session.attributes.next === "breakdown") {
+            session.attributes.next = "trends";
+            response.ask("Out of 3427 blocked email, 93% are Spam and 7% are Viruses. Would you like to hear the trends?");
+        }
+        if (session.attributes.next === "trends") {
+            response.tell("Viruses increased 4% versus previous 24 hours period.");
+        }
     },
     "AMAZON.HelpIntent": function (intent, session, response) {
         response.ask("You can say summary to me!", "You can say summary to me!");
@@ -77,4 +92,12 @@ exports.handler = function (event, context) {
     var bess = new BESS();
     bess.execute(event, context);
 };
+
+//if (session.attributes.next === "trends") {
+//	session.attributes.next = "upsell";
+//    response.ask("Viruses increased 4% versus previous 24 hours period. Barracuda Advanced threats detection will help you keep your organization secure. Would you like to talk to a sales representative now?");
+//}
+//if (session.attributes.next === "upsell") {
+//    response.tell("I'm sorry, the sales department is closed right now, but Fleming says Hi.");
+//}
 
